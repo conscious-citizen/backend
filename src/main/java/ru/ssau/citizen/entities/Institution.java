@@ -13,4 +13,8 @@ public class Institution {
     @Id
     @GeneratedValue
     private Long id;
+    private String name;
+    private String city;
+    private String district;
+    private String description;
 }

@@ -17,4 +17,7 @@ public class Template {
 
     @OneToOne
     Event event;
+
+    private String name;
+    private String text;
 }

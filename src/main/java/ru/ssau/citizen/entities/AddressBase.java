@@ -13,4 +13,9 @@ public class AddressBase {
     @Id
     @GeneratedValue
     private Long id;
+    private float longitude;
+    private float latitude;
+    private String city;
+    private String street;
+    private String home;
 }
