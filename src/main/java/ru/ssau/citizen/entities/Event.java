@@ -2,10 +2,7 @@ package ru.ssau.citizen.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
@@ -21,6 +18,12 @@ public class Event {
 
     @ManyToOne
     private Rubric rubric;
+
+    @OneToOne
+    private Address address;
+
+    @OneToOne
+    private Template template;
 
     private boolean status;
 
