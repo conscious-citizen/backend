@@ -19,7 +19,7 @@ public class Actor {
 
     private String patronymic;
 
-    private int phoneNumber;
+    private Long phoneNumber;
 
     private String eMail;
 
