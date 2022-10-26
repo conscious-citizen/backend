@@ -21,7 +21,7 @@ public class Actor {
 
     private int phoneNumber;
 
-    private String eMail;
+    private String email;
 
     private String city;
 
@@ -38,6 +38,9 @@ public class Actor {
     private boolean status;
 
     private boolean isMailing;
+
+
+    private String resetPasswordToken;
 
     @ManyToOne
     private Role role;

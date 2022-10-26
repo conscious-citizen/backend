@@ -17,12 +17,12 @@ public class RegisterController {
     ActorServiceImp actorServiceImp;
 
     @PostMapping("/registration")
-    public String register(@RequestParam String login, @RequestParam String password, @RequestParam String email,
+    public String register(@RequestParam String login, @RequestParam String password, @RequestParam String eMail,
                            @RequestParam String city,@RequestParam String house,@RequestParam String street,
                            @RequestParam String apartment){
         if(actorServiceImp.findActorByLogin(login)== null){
         Actor actor = new Actor();
-        actor.setEMail(email);
+        actor.setEmail(eMail);
         actor.setCity(city);
         actor.setStreet(street);
         actor.setHouse(house);
