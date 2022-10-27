@@ -11,9 +11,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.ssau.citizen.DTO.ForgotPasswordDTO;
+import ru.ssau.citizen.DTO.ResetPasswordDTO;
 import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.service.ActorServiceImp;
 
@@ -32,32 +32,29 @@ public class ForgotPasswordController {
     @Autowired
     private ActorServiceImp customerService;
 
-    //@GetMapping("/forgot_password")
-    //public String showForgotPasswordForm() {
-    //    return "forgot_password_form";
-    //}
 
     @PostMapping("/forgot_password")
-    public ResponseEntity processForgotPassword(HttpServletRequest request, Model model) {
+    public ResponseEntity processForgotPassword(@RequestBody ForgotPasswordDTO request) {
 
-        String email= request.getParameter("email");
+        //String email= request.getParameter("email");
+        String email= request.getEmail();
         String token = RandomString.make(30);
 
         try {
             customerService.updateResetPasswordToken(token, email);
-            String siteURL = request.getRequestURL().toString();
-            siteURL.replace(request.getServletPath(), "");
+            String siteURL = request.getUrl();
+
             String resetPasswordLink = siteURL + "/reset_password?token=" + token;
 
             sendEmail(email, resetPasswordLink);
-            model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
+
 
         } catch (Exception ex) {
             return new ResponseEntity("error mail send", HttpStatus.BAD_REQUEST);
-            //model.addAttribute("error", ex.getMessage());
+
         }
 
-        return new ResponseEntity("ok", HttpStatus.OK);
+        return new ResponseEntity("OK! We have sent a reset password link to your email. Please check.", HttpStatus.OK);
     }
 
 
@@ -67,62 +64,34 @@ public class ForgotPasswordController {
         SimpleMailMessage simpleMail = new SimpleMailMessage();
         simpleMail.setFrom("conscious.scitizen.help@yandex.ru");
         simpleMail.setTo(recipientEmail);
-        simpleMail.setSubject("Java 20 new hot features");
-        simpleMail.setText("Java 20 new hot features. No attachments :(" + link);
-        /*MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        simpleMail.setSubject("Here's the link to reset your password");
+        simpleMail.setText("Hello You have requested to reset your password. Click the link below to change your password:"
+                + link +" Ignore this email if you do remember your password, or you have not made the request.");
 
-        helper.setFrom("contact@shopme.com", "Shopme Support");
-        helper.setTo(recipientEmail);
-
-        String subject = "Here's the link to reset your password";
-
-        String content = "<p>Hello,</p>"
-                + "<p>You have requested to reset your password.</p>"
-                + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + link + "\">Change my password</a></p>"
-                + "<br>"
-                + "<p>Ignore this email if you do remember your password, "
-                + "or you have not made the request.</p>";
-
-        helper.setSubject(subject);
-
-        helper.setText(content, true);*/
 
         mailSender.send(simpleMail);
     }
 
 
-    @GetMapping("/reset_password")
-    public String showResetPasswordForm(@Param(value = "token") String token, Model model) {
-        Actor customer = customerService.getByResetPasswordToken(token);
-        model.addAttribute("token", token);
+
+
+    @PostMapping("/forgot_password/reset_password")
+    public String processResetPassword(@RequestBody ResetPasswordDTO request) {
+
+
+        String msg;
+
+        Actor customer = customerService.getByResetPasswordToken(request.getToken());
 
         if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
-            return "message";
-        }
 
-        return "reset_password_form";
-    }
-
-    @PostMapping("/reset_password")
-    public String processResetPassword(HttpServletRequest request, Model model) {
-        String token = request.getParameter("token");
-        String password = request.getParameter("password");
-
-        Actor customer = customerService.getByResetPasswordToken(token);
-        model.addAttribute("title", "Reset your password");
-
-        if (customer == null) {
-            model.addAttribute("message", "Invalid Token");
-            return "message";
+            msg = "Invalid Token";
+            return msg;
         } else {
-            customerService.updatePassword(customer, password);
-
-            model.addAttribute("message", "You have successfully changed your password.");
+            customerService.updatePassword(customer, request.getPassword());
+            msg = "You have successfully changed your password.";
         }
 
-        return "message";
+        return msg;
     }
 }
