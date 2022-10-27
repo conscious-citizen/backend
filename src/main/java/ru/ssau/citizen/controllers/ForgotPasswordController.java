@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.Model;
@@ -31,10 +32,10 @@ public class ForgotPasswordController {
     @Autowired
     private ActorServiceImp customerService;
 
-    @GetMapping("/forgot_password")
-    public String showForgotPasswordForm() {
-        return "forgot_password_form";
-    }
+    //@GetMapping("/forgot_password")
+    //public String showForgotPasswordForm() {
+    //    return "forgot_password_form";
+    //}
 
     @PostMapping("/forgot_password")
     public ResponseEntity processForgotPassword(HttpServletRequest request, Model model) {
@@ -59,9 +60,16 @@ public class ForgotPasswordController {
         return new ResponseEntity("ok", HttpStatus.OK);
     }
 
+
     public void sendEmail(String recipientEmail, String link)
             throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
+
+        SimpleMailMessage simpleMail = new SimpleMailMessage();
+        simpleMail.setFrom("conscious.scitizen.help@yandex.ru");
+        simpleMail.setTo(recipientEmail);
+        simpleMail.setSubject("Java 20 new hot features");
+        simpleMail.setText("Java 20 new hot features. No attachments :(" + link);
+        /*MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setFrom("contact@shopme.com", "Shopme Support");
@@ -79,9 +87,9 @@ public class ForgotPasswordController {
 
         helper.setSubject(subject);
 
-        helper.setText(content, true);
+        helper.setText(content, true);*/
 
-        mailSender.send(message);
+        mailSender.send(simpleMail);
     }
 
 
