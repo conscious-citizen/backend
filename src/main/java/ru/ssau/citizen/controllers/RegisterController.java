@@ -1,17 +1,29 @@
 package ru.ssau.citizen.controllers;
 
+
+import org.aspectj.lang.annotation.SuppressAjWarnings;
+import org.hibernate.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import ru.ssau.citizen.dto.JwtResponseDto;
+import ru.ssau.citizen.dto.LoginDto;
+import ru.ssau.citizen.dto.MessageResponse;
+import ru.ssau.citizen.dto.RegistrationDto;
 import ru.ssau.citizen.entities.Actor;
+import ru.ssau.citizen.repository.ActorRepository;
+import ru.ssau.citizen.service.ActorService;
 import ru.ssau.citizen.service.ActorServiceImp;
 import ru.ssau.citizen.util.JWTUtil;
 
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static org.hibernate.tool.schema.SchemaToolingLogging.LOGGER;
 
 @RestController
 public class RegisterController {
@@ -22,44 +34,19 @@ public class RegisterController {
 
 
     @Autowired
-    public RegisterController(ActorServiceImp actorServiceImp, JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
-        this.actorServiceImp = actorServiceImp;
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
+
+    ActorServiceImp actorServiceImp;
+    @Autowired
+    ActorService actorService;
+
+    @PostMapping("auth/login")
+    public ResponseEntity<JwtResponseDto> authUser(@RequestBody LoginDto loginDto) {
+        return new ResponseEntity<>(actorService.login(loginDto), HttpStatus.OK);
     }
 
-    @PostMapping("/registration")
-    public Map<String, String> register(@RequestParam String login, @RequestParam String password, @RequestParam String email,
-                                        @RequestParam String city, @RequestParam String house, @RequestParam String street,
-                                        @RequestParam String apartment) {
-        if (actorServiceImp.findActorByLogin(login) == null) {
-            Actor actor = new Actor();
-            actor.setEMail(email);
-            actor.setCity(city);
-            actor.setStreet(street);
-            actor.setHouse(house);
-            actor.setApartment(apartment);
-            actor.setLogin(login);
-            actor.setPassword(password);
-            actorServiceImp.save(actor);
-            String token = jwtUtil.generateToken(actor.getLogin());
-            return Map.of("jwt-token", token);
-        } else return Map.of("User exists", "User exists");
-    }
+    @PostMapping("auth/registration")
+    public ResponseEntity<MessageResponse> registerUser(@RequestBody RegistrationDto registrationDto) {
+        return new ResponseEntity<>(actorService.registration(registrationDto), HttpStatus.OK);
 
-    @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestParam(value = "login") String login, @RequestParam(value = "password") String password) {
-        UsernamePasswordAuthenticationToken authInputToken =
-                new UsernamePasswordAuthenticationToken(login,
-                        password);
-
-        try {
-            authenticationManager.authenticate(authInputToken);
-        } catch (BadCredentialsException e) {
-            return Map.of("message", "Incorrect credentials!");
-        }
-
-        String token = jwtUtil.generateToken(login);
-        return Map.of("jwt-token", token);
     }
 }

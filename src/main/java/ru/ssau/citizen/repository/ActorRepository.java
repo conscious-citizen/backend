@@ -6,4 +6,5 @@ import ru.ssau.citizen.entities.Actor;
 public interface ActorRepository extends JpaRepository<Actor,Long> {
     public Actor findActorByLogin(String login);
 
+    boolean existsByLogin(String username);
 }
