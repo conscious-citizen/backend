@@ -1,6 +1,5 @@
 package ru.ssau.citizen.controllers;
 
-
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.hibernate.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.repository.ActorRepository;
 import ru.ssau.citizen.service.ActorService;
 import ru.ssau.citizen.service.ActorServiceImp;
-import ru.ssau.citizen.util.JWTUtil;
-
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,14 +23,7 @@ import static org.hibernate.tool.schema.SchemaToolingLogging.LOGGER;
 
 @RestController
 public class RegisterController {
-
-    private final ActorServiceImp actorServiceImp;
-    private final JWTUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
-
-
     @Autowired
-
     ActorServiceImp actorServiceImp;
     @Autowired
     ActorService actorService;
@@ -47,7 +36,6 @@ public class RegisterController {
     @PostMapping("auth/registration")
     public ResponseEntity<MessageResponse> registerUser(@RequestBody RegistrationDto registrationDto) {
         return new ResponseEntity<>(actorService.registration(registrationDto), HttpStatus.OK);
-
 
     }
 }

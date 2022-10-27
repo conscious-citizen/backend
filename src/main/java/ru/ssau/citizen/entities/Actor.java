@@ -52,9 +52,9 @@ public class Actor {
     public Actor() {
     }
 
-    public Actor(String eMail, String city, String street,
+    public Actor(String email, String city, String street,
                  String house, String apartment, String login, String password) {
-        this.eMail = eMail;
+        this.email = email;
         this.city = city;
         this.street = street;
         this.house = house;
