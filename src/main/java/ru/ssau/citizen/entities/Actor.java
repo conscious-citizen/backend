@@ -26,7 +26,7 @@ public class Actor {
     private long phoneNumber;
 
 
-    private String eMail;
+    private String email;
 
     private String city;
 
@@ -44,6 +44,11 @@ public class Actor {
 
     private boolean isMailing;
 
+
+
+    private String resetPasswordToken;
+
+    
     public Actor() {
     }
 
@@ -64,6 +69,7 @@ public class Actor {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
 
     @OneToMany(mappedBy = "actor")
     private List<Event> events;

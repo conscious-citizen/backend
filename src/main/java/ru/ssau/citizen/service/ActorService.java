@@ -10,4 +10,5 @@ public interface ActorService {
     JwtResponseDto login(LoginDto loginDto);
     MessageResponse registration(RegistrationDto registrationDto);
     Actor findActorByLogin(String login);
+
 }

@@ -48,5 +48,6 @@ public class RegisterController {
     public ResponseEntity<MessageResponse> registerUser(@RequestBody RegistrationDto registrationDto) {
         return new ResponseEntity<>(actorService.registration(registrationDto), HttpStatus.OK);
 
+
     }
 }

@@ -94,4 +94,28 @@ public class ActorServiceImp implements ActorService{
     public Actor findActorByLogin(String login) {
         return actorRepository.findActorByLogin(login);
     }
+
+
+    public void updateResetPasswordToken(String token, String email) throws Exception {
+        Actor customer = actorRepository.findActorByEmail(email);
+        if (customer != null) {
+            customer.setResetPasswordToken(token);
+            actorRepository.save(customer);
+        } else {
+            throw new Exception("Could not find any customer with the email " + email);
+        }
+    }
+
+    public Actor getByResetPasswordToken(String token) {
+        return actorRepository.findByResetPasswordToken(token);
+    }
+
+    public void updatePassword(Actor customer, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        customer.setPassword(encodedPassword);
+
+        customer.setResetPasswordToken(null);
+        actorRepository.save(customer);
+    }
 }
