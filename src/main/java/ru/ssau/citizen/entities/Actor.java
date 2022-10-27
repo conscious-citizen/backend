@@ -1,9 +1,13 @@
 package ru.ssau.citizen.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -19,7 +23,8 @@ public class Actor {
 
     private String patronymic;
 
-    private int phoneNumber;
+    private long phoneNumber;
+
 
     private String email;
 
@@ -40,12 +45,32 @@ public class Actor {
     private boolean isMailing;
 
 
+
     private String resetPasswordToken;
 
-    @ManyToOne
-    private Role role;
+    
+    public Actor() {
+    }
+
+    public Actor(String eMail, String city, String street,
+                 String house, String apartment, String login, String password) {
+        this.eMail = eMail;
+        this.city = city;
+        this.street = street;
+        this.house = house;
+        this.apartment = apartment;
+        this.login = login;
+        this.password = password;
+    }
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
 
     @OneToMany(mappedBy = "actor")
     private List<Event> events;
-
 }
