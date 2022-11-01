@@ -77,12 +77,12 @@ public class ActorServiceImp implements ActorService{
         switch (requestRole) {
             case "ROLE_USER":
                 Role roleStudent = roleRepository.findByName(ERole.ROLE_USER)
-                        .orElseThrow(() -> new GlobalException("Роль 'Ученик' не найдена", HttpStatus.BAD_REQUEST));
+                        .orElseThrow(() -> new GlobalException("Роль 'Пользователь' не найдена", HttpStatus.BAD_REQUEST));
                 roles.add(roleStudent);
                 break;
             case "ROLE_ADMIN":
                 Role roleTeacher = roleRepository.findByName(ERole.ROLE_ADMIN)
-                        .orElseThrow(() -> new GlobalException("Роль 'Учитель' не найдена", HttpStatus.BAD_REQUEST));
+                        .orElseThrow(() -> new GlobalException("Роль 'Админ' не найдена", HttpStatus.BAD_REQUEST));
                 roles.add(roleTeacher);
                 break;
         }

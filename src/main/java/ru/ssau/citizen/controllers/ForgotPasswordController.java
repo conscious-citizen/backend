@@ -4,13 +4,10 @@ import net.bytebuddy.utility.RandomString;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.DTO.ForgotPasswordDTO;
 import ru.ssau.citizen.DTO.ResetPasswordDTO;
@@ -18,8 +15,6 @@ import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.service.ActorServiceImp;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 
 @RestController
@@ -30,7 +25,7 @@ public class ForgotPasswordController {
     private JavaMailSender mailSender;
 
     @Autowired
-    private ActorServiceImp customerService;
+    private ActorServiceImp actorService;
 
 
     @PostMapping("/forgot_password")
@@ -41,7 +36,7 @@ public class ForgotPasswordController {
         String token = RandomString.make(30);
 
         try {
-            customerService.updateResetPasswordToken(token, email);
+            actorService.updateResetPasswordToken(token, email);
             String siteURL = request.getUrl();
 
             String resetPasswordLink = siteURL + "/reset_password?token=" + token;
@@ -81,14 +76,14 @@ public class ForgotPasswordController {
 
         String msg;
 
-        Actor customer = customerService.getByResetPasswordToken(request.getToken());
+        Actor customer = actorService.getByResetPasswordToken(request.getToken());
 
         if (customer == null) {
 
             msg = "Invalid Token";
             return msg;
         } else {
-            customerService.updatePassword(customer, request.getPassword());
+            actorService.updatePassword(customer, request.getPassword());
             msg = "You have successfully changed your password.";
         }
 

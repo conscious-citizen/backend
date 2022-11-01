@@ -1,5 +1,6 @@
 package ru.ssau.citizen.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
@@ -64,7 +65,7 @@ public class Actor {
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonIgnore
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
