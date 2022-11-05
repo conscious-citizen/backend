@@ -1,5 +1,6 @@
 package ru.ssau.citizen.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "events")
+@Schema(description = "Информация об инциденте")
 public class Event {
 
     @Id

@@ -1,5 +1,6 @@
 package ru.ssau.citizen.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.hibernate.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import static org.hibernate.tool.schema.SchemaToolingLogging.LOGGER;
 
 @RestController
+@Tag(name = "Регистрация", description = "Все методы для работы с регистрацией")
 public class RegisterController {
     @Autowired
     ActorServiceImp actorServiceImp;

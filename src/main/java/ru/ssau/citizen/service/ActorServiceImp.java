@@ -28,17 +28,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class ActorServiceImp implements ActorService{
+public class ActorServiceImp implements ActorService {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private  JwtUtils jwtUtils;
+    private JwtUtils jwtUtils;
     @Autowired
     private ActorRepository actorRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
-    private  PasswordEncoder passwordEncoder;;
+    private PasswordEncoder passwordEncoder;
+    ;
 
     @Override
     public JwtResponseDto login(LoginDto loginDto) {
@@ -63,11 +64,19 @@ public class ActorServiceImp implements ActorService{
 
     @Override
     public MessageResponse registration(RegistrationDto registrationDto) {
-        if (actorRepository.existsByLogin(registrationDto.getUsername()))
-            throw new GlobalException("Ошибка: Данный пользователь уже зарегистрирован!", HttpStatus.BAD_REQUEST);
+        if (actorRepository.existsByLogin(registrationDto.getUsername())) {
+//            throw new GlobalException("Ошибка: Пользователь с таким логином уже зарегистрирован!", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("Ошибка: Пользователь с таким логином уже зарегистрирован!");
+        }
 
-        Actor user = new Actor(registrationDto.getEmail(),registrationDto.getCity(),registrationDto.getStreet(),
-                registrationDto.getHouse(),registrationDto.getApartment(),
+        if (actorRepository.existsActorByEmail(registrationDto.getEmail())) {
+//            throw new GlobalException("Ошибка: Пользователь с таким email уже зарегестрирован", HttpStatus.BAD_REQUEST);
+            return new MessageResponse("Ошибка: Пользователь с таким email уже зарегистрирован!");
+
+        }
+
+        Actor user = new Actor(registrationDto.getEmail(), registrationDto.getCity(), registrationDto.getStreet(),
+                registrationDto.getHouse(), registrationDto.getApartment(),
                 registrationDto.getUsername(),
                 passwordEncoder.encode(registrationDto.getPassword()));
 
@@ -90,6 +99,7 @@ public class ActorServiceImp implements ActorService{
         actorRepository.save(user);
         return new MessageResponse("Пользователь " + user.getLogin() + " успешно зарегистрирован!");
     }
+
     @Override
     public Actor findActorByLogin(String login) {
         return actorRepository.findActorByLogin(login);
