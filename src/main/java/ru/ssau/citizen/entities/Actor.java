@@ -2,6 +2,7 @@ package ru.ssau.citizen.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Data
 @Entity
+@Schema(description = "Информация об актёре")
 public class Actor {
 
     @Id

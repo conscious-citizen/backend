@@ -1,6 +1,7 @@
 package ru.ssau.citizen.controllers;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import ru.ssau.citizen.repository.ActorRepository;
 import ru.ssau.citizen.service.ActorService;
 
 @RestController
+@Tag(name = "Актёр", description = "Все методы для работы с пользователем")
 public class ActorController {
 
 

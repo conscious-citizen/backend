@@ -1,11 +1,13 @@
 package ru.ssau.citizen.entities;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Data
 @Entity
+@Schema(description = "Информация об адресе")
 public class Address {
 
 
@@ -15,6 +17,7 @@ public class Address {
 
     @OneToOne
     Event event;
+
     private float longitude;
     private float latitude;
     private String city;

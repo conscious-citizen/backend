@@ -11,4 +11,6 @@ public interface ActorRepository extends JpaRepository<Actor,Long> {
 
     boolean existsByLogin(String username);
 
+    boolean existsActorByEmail(String email);
+
 }

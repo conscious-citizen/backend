@@ -1,5 +1,6 @@
 package ru.ssau.citizen.controllers;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.bytebuddy.utility.RandomString;
 
 
@@ -18,6 +19,7 @@ import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 
 @RestController
+@Tag(name = "Сброс пароля", description = "Все методы для работы со сбросом пароля")
 public class ForgotPasswordController {
 
 
