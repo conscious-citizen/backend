@@ -93,7 +93,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**");
         web.ignoring().antMatchers(AUTH_WHITELIST);
 
     }
