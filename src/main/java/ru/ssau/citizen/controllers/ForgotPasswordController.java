@@ -33,7 +33,7 @@ public class ForgotPasswordController {
 
 
     @PostMapping("/forgot_password")
-    @Operation(summary = "Сброс пароля и отпарвка на почту ссылка для обновления пароля")
+    @Operation(summary = "Сброс пароля и отправка на почту ссылки для обновления пароля")
     public ResponseEntity processForgotPassword(@RequestBody ForgotPasswordDTO request) {
 
         //String email= request.getParameter("email");
