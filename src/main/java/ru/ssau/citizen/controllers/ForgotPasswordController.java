@@ -1,5 +1,7 @@
 package ru.ssau.citizen.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.bytebuddy.utility.RandomString;
 
@@ -31,6 +33,7 @@ public class ForgotPasswordController {
 
 
     @PostMapping("/forgot_password")
+    @Operation(summary = "Сброс пароля и отпарвка на почту ссылка для обновления пароля")
     public ResponseEntity processForgotPassword(@RequestBody ForgotPasswordDTO request) {
 
         //String email= request.getParameter("email");
@@ -73,6 +76,7 @@ public class ForgotPasswordController {
 
 
     @PostMapping("/forgot_password/reset_password")
+    @Operation(summary = "Обновление пароля")
     public String processResetPassword(@RequestBody ResetPasswordDTO request) {
 
 

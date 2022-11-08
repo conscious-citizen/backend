@@ -1,6 +1,8 @@
 package ru.ssau.citizen.controllers;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +28,15 @@ public class ActorController {
     ActorRepository actorRepository;
 
     @GetMapping("/user")
+    @Operation(summary = "Показать информацию о пользователе")
     public ResponseEntity<Actor> showInfoAboutUser(@AuthenticationPrincipal UserDetails userDetails) {
         Actor actor = actorService.findActorByLogin(userDetails.getUsername());
         return ResponseEntity.ok(actor);
     }
 
     @PatchMapping("/user/update")
-    public ResponseEntity<Actor> updateUser(@RequestBody Actor actor,@AuthenticationPrincipal UserDetails userDetails){
+    @Operation(summary = "Обновление пользователя")
+    public ResponseEntity<Actor> updateUser(@RequestBody Actor actor, @AuthenticationPrincipal UserDetails userDetails){
         Actor currentActor = actorService.findActorByLogin(userDetails.getUsername());
         actor.setId(currentActor.getId());
         if (!currentActor.getPassword().equals(actor.getPassword())) {
