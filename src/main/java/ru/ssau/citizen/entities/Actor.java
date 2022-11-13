@@ -1,12 +1,12 @@
 package ru.ssau.citizen.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,8 +26,7 @@ public class Actor {
 
     private String patronymic;
 
-    private long phoneNumber;
-
+    private String phoneNumber;
 
     private String email;
 
@@ -68,6 +67,7 @@ public class Actor {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonIgnore
+    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
