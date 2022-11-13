@@ -12,7 +12,6 @@ public class CitizenApplication {
 		SpringApplication.run(CitizenApplication.class, args);
 	}
 
-
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();

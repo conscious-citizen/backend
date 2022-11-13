@@ -1,8 +1,6 @@
-package ru.ssau.citizen.DTO;
+package ru.ssau.citizen.dto;
 
 import lombok.Data;
-
-import java.net.URL;
 
 @Data
 public class ForgotPasswordDTO {

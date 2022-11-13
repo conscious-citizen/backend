@@ -1,4 +1,4 @@
-package ru.ssau.citizen.DTO;
+package ru.ssau.citizen.dto;
 
 import lombok.Data;
 

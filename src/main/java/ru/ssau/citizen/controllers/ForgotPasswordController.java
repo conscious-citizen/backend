@@ -1,7 +1,6 @@
 package ru.ssau.citizen.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import net.bytebuddy.utility.RandomString;
 
@@ -12,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-import ru.ssau.citizen.DTO.ForgotPasswordDTO;
-import ru.ssau.citizen.DTO.ResetPasswordDTO;
+import ru.ssau.citizen.dto.ForgotPasswordDTO;
+import ru.ssau.citizen.dto.ResetPasswordDTO;
 import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.service.ActorServiceImp;
 
