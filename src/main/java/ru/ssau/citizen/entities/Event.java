@@ -2,8 +2,10 @@ package ru.ssau.citizen.entities;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
 import java.time.LocalDate;
 
 @Data
@@ -34,7 +36,8 @@ public class Event {
 
     private String messageText;
 
-    private String photo;
+    @Lob
+    private byte[] photo;
 
     private LocalDate currentDate;
 

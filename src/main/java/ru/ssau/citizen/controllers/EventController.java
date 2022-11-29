@@ -31,11 +31,11 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
-                                                      Address address, Rubric rubric, String photoDir,
+                                                      Address address, Rubric rubric,
                                                       @AuthenticationPrincipal UserDetails userDetails) {
         Event event = convertToEvent(createEventDTO);
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
-        eventService.createEvent(event, address, rubric, photoDir);
+        eventService.createEvent(event, address, rubric, createEventDTO.getPhoto());
         return ResponseEntity.ok(event);
     }
 

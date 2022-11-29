@@ -1,6 +1,7 @@
 package ru.ssau.citizen.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CreateEventDTO {
@@ -9,5 +10,5 @@ public class CreateEventDTO {
 
     private String messageText;
 
-    private String photo;
+    private byte[] photo;
 }
