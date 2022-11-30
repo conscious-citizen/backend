@@ -9,5 +9,5 @@ public class CreateEventDTO {
 
     private String messageText;
 
-    private String photo;
+    private byte[] photo;
 }
