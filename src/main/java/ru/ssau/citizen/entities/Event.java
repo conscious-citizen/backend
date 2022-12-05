@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.time.LocalDate;
 
@@ -21,9 +22,10 @@ public class Event {
     @ManyToOne
     private Actor actor;
 
-    @ManyToOne
-    private Rubric rubric;
+//    @ManyToOne
+    private Long rubricId;
 
+    @Null
     @OneToOne
     private Address address;
 
