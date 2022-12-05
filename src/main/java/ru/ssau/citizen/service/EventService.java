@@ -7,7 +7,7 @@ import ru.ssau.citizen.entities.Rubric;
 
 public interface EventService {
 
-    void createEvent(Event event, Address address, Rubric rubric, byte[] photoDir);
+    void createEvent(Event event, Address address);
 
     void save(Event event);
 

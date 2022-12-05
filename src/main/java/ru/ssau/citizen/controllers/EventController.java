@@ -8,16 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.citizen.dto.AddressDto;
 import ru.ssau.citizen.dto.CreateEventDTO;
-import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.entities.Address;
 import ru.ssau.citizen.entities.Event;
-import ru.ssau.citizen.entities.Rubric;
 import ru.ssau.citizen.repository.ActorRepository;
 import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.service.EventService;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -43,11 +41,11 @@ public class EventController {
     @Operation(summary = "Создать инцидент")
 
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
-                                                      Address address, Rubric rubric,
-                                                      @AuthenticationPrincipal UserDetails userDetails) {
+                                             @AuthenticationPrincipal UserDetails userDetails) {
         Event event = convertToEvent(createEventDTO);
+        Address address = convertToAddress(createEventDTO.getAddressDto());
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
-        eventService.createEvent(event, address, rubric, createEventDTO.getPhoto());
+        eventService.createEvent(event, address);
         return ResponseEntity.ok(event);
     }
 
@@ -67,6 +65,10 @@ public class EventController {
 
     private Event convertToEvent(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
+    }
+
+    private Address convertToAddress(AddressDto addressDto) {
+        return modelMapper.map(addressDto, Address.class);
     }
 
 }
