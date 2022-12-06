@@ -9,11 +9,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.dto.CreateEventDTO;
-import ru.ssau.citizen.entities.Actor;
-import ru.ssau.citizen.entities.Address;
-import ru.ssau.citizen.entities.Event;
-import ru.ssau.citizen.entities.Rubric;
+import ru.ssau.citizen.entities.*;
 import ru.ssau.citizen.repository.ActorRepository;
+import ru.ssau.citizen.repository.EventDraftRepository;
 import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.service.EventService;
 
@@ -28,6 +26,8 @@ public class EventController {
     private final EventService eventService;
     private final ActorRepository actorRepository;
     private final EventRepository eventRepository;
+    @Autowired
+    private EventDraftRepository eventDraftRepository;
     private final ModelMapper modelMapper;
 
 
@@ -43,8 +43,8 @@ public class EventController {
     @Operation(summary = "Создать инцидент")
 
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
-                                                      Address address, Rubric rubric,
-                                                      @AuthenticationPrincipal UserDetails userDetails) {
+                                             Address address, Rubric rubric,
+                                             @AuthenticationPrincipal UserDetails userDetails) {
         Event event = convertToEvent(createEventDTO);
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
         eventService.createEvent(event, address, rubric, createEventDTO.getPhoto());
@@ -60,13 +60,40 @@ public class EventController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Показать информацию о выбранном по ID инцеденте")
-    public ResponseEntity<Event> showEvent(@PathVariable ("id") Long id) {
+    public ResponseEntity<Event> showEvent(@PathVariable("id") Long id) {
         Event event = eventRepository.findById(id).orElse(null);
+        return ResponseEntity.ok(event);
+    }
+    @PostMapping("/createdraft")
+    @Operation(summary = "Добавить черновик")
+
+    public ResponseEntity<EventDraft> createEventDraft(@RequestBody CreateEventDTO createEventDTO,
+                                                       Address address, Rubric rubric,
+                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        EventDraft event = convertToEventDraft(createEventDTO);
+        event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
+        eventService.createEventDraft(event, address, rubric, createEventDTO.getPhoto());
+        return ResponseEntity.ok(event);
+    }
+    @GetMapping("/draft")
+    @Operation(summary = "Показать список черновиков")
+    public ResponseEntity<List<EventDraft>> showAllEventDraft() {
+        List<EventDraft> eventList = eventDraftRepository.findAll();
+        return ResponseEntity.ok(eventList);
+    }
+    @GetMapping("/draft/{id}")
+    @Operation(summary = "Показать информацию о выбранном по ID инцеденте")
+    public ResponseEntity<EventDraft> showEventDraft(@PathVariable("id") Long id) {
+        EventDraft event = eventDraftRepository.findById(id).orElse(null);
         return ResponseEntity.ok(event);
     }
 
     private Event convertToEvent(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
+    }
+
+    private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
+        return modelMapper.map(createEventDTO, EventDraft.class);
     }
 
 }

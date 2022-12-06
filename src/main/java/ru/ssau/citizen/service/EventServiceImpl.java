@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.citizen.entities.Address;
 import ru.ssau.citizen.entities.Event;
+import ru.ssau.citizen.entities.EventDraft;
 import ru.ssau.citizen.entities.Rubric;
+import ru.ssau.citizen.repository.EventDraftRepository;
 import ru.ssau.citizen.repository.EventRepository;
 
 import java.sql.Blob;
@@ -15,6 +17,8 @@ import java.time.LocalDate;
 public class EventServiceImpl implements EventService{
 
     private final EventRepository eventRepository;
+    @Autowired
+    private  EventDraftRepository eventDraftRepository;
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository) {
@@ -32,8 +36,23 @@ public class EventServiceImpl implements EventService{
     }
 
     @Override
+    public void createEventDraft(EventDraft event, Address address, Rubric rubric, byte[] photoDir) {
+        event.setAddress(address);
+        event.setStatus(false);
+        event.setCurrentDate(LocalDate.now());
+        event.setRubric(rubric);
+        event.setPhoto(photoDir);
+        save(event);
+    }
+
+    @Override
     public void save(Event event) {
         eventRepository.save(event);
+    }
+
+    @Override
+    public void save(EventDraft eventDraft) {
+        eventDraftRepository.save(eventDraft);
     }
 
 }
