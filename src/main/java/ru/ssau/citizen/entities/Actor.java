@@ -80,5 +80,6 @@ public class Actor {
 
 
     @OneToMany(mappedBy = "actor")
+    @JsonIgnore
     private List<Event> events;
 }

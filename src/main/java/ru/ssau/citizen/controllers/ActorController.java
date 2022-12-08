@@ -58,10 +58,8 @@ public class ActorController {
     public ResponseEntity<Actor> updateUser(@RequestBody UpdateDto actorDto, @AuthenticationPrincipal UserDetails userDetails){
         Actor currentActor = actorService.findActorByLogin(userDetails.getUsername());
         Actor newActor = convertToActor(actorDto);
-        newActor.setLogin(userDetails.getUsername());
-//        newActor.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
-        newActor.setPassword(userDetails.getPassword());
         newActor.setId(currentActor.getId());
+        newActor.setPassword(bCryptPasswordEncoder.encode(actorDto.getPassword()));
         newActor.setEvents(currentActor.getEvents());
         actorRepository.save(newActor);
         return ResponseEntity.ok(newActor);

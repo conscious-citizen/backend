@@ -8,8 +8,17 @@ public class UpdateDto {
     private String lastName;
     private String patronymic;
     private String phoneNumber;
-    private String username;
-    private String street;
     private String email;
+
     private String city;
+
+    private String street;
+
+    private String house;
+
+    private String apartment;
+
+    private String login;
+
+    private String password;
 }
