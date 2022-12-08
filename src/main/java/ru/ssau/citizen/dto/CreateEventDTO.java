@@ -1,6 +1,7 @@
 package ru.ssau.citizen.dto;
 
 import lombok.Data;
+import ru.ssau.citizen.entities.Address;
 
 @Data
 public class CreateEventDTO {
@@ -9,5 +10,9 @@ public class CreateEventDTO {
 
     private String messageText;
 
-    private String photo;
+    private byte[] photo;
+
+    private AddressDto addressDto;
+
+    private Long rubricId;
 }

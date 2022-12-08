@@ -55,7 +55,8 @@ public class Actor {
     }
 
     public Actor(String email, String city, String street,
-                 String house, String apartment, String login, String password) {
+                 String house, String apartment, String login, String password,
+                 String firstName, String lastName, String patronymic, String phoneNumber) {
         this.email = email;
         this.city = city;
         this.street = street;
@@ -63,6 +64,10 @@ public class Actor {
         this.apartment = apartment;
         this.login = login;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.phoneNumber = phoneNumber;
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
