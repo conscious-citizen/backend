@@ -54,8 +54,8 @@ public class ActorController {
 //    }
 
     @PatchMapping("/user/update")
-    @Operation(summary = "Обновление пользователя")
-    public ResponseEntity<Actor> updateUser(@RequestBody UpdateDto actorDto, @AuthenticationPrincipal UserDetails userDetails) {
+    @Operation(summary = "Обновить информацию о пользователе")
+    public ResponseEntity<Actor> updateUser(@RequestBody UpdateDto actorDto, @AuthenticationPrincipal UserDetails userDetails){
         Actor currentActor = actorService.findActorByLogin(userDetails.getUsername());
         Actor newActor = actorService.update(actorDto, currentActor);
         return ResponseEntity.ok(newActor);

@@ -79,8 +79,8 @@ public class ActorServiceImp implements ActorService {
 
         Actor user = new Actor(registrationDto.getEmail(), registrationDto.getCity(), registrationDto.getStreet(),
                 registrationDto.getHouse(), registrationDto.getApartment(),
-                registrationDto.getUsername(),
-                passwordEncoder.encode(registrationDto.getPassword()));
+                registrationDto.getUsername(), passwordEncoder.encode(registrationDto.getPassword()), registrationDto.getFirstName(),
+                registrationDto.getLastName(), registrationDto.getPatronymic(), registrationDto.getPhoneNumber());
 
         String requestRole = registrationDto.getRole();
         Set<Role> roles = new HashSet<>();

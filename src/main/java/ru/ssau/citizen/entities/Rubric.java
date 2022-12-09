@@ -13,8 +13,8 @@ public class Rubric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "rubric")
-    List<Event> events;
+//    @OneToMany(mappedBy = "rubric")
+//    List<Event> events;
 
     private String name;
 
