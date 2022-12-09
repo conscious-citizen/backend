@@ -1,5 +1,6 @@
 package ru.ssau.citizen.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,10 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.ssau.citizen.dto.JwtResponseDto;
-import ru.ssau.citizen.dto.LoginDto;
-import ru.ssau.citizen.dto.MessageResponse;
-import ru.ssau.citizen.dto.RegistrationDto;
+import ru.ssau.citizen.dto.*;
 import ru.ssau.citizen.config.jwt.JwtUtils;
 import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.entities.ERole;
@@ -39,6 +37,11 @@ public class ActorServiceImp implements ActorService {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    ModelMapper modelMapper;
+
 
     @Override
     public JwtResponseDto login(LoginDto loginDto) {
@@ -104,6 +107,21 @@ public class ActorServiceImp implements ActorService {
         return actorRepository.findActorByLogin(login);
     }
 
+    @Override
+    public Actor update(UpdateDto actorDto, Actor currentActor) {
+        Actor newActor = convertToActor(actorDto);
+        if (actorDto.getEmail().equals(currentActor.getEmail())) {
+            throw new GlobalException("Пользователь с таким email уже зарегистрирован", HttpStatus.BAD_REQUEST);
+        } else if (actorDto.getLogin().equals(currentActor.getLogin())) {
+            throw new GlobalException("Пользователь с таким login уже зарегистрирован", HttpStatus.BAD_REQUEST);
+        }
+        newActor.setId(currentActor.getId());
+        newActor.setPassword(bCryptPasswordEncoder.encode(actorDto.getPassword()));
+        newActor.setEvents(currentActor.getEvents());
+        actorRepository.save(newActor);
+        return newActor;
+    }
+
 
     public void updateResetPasswordToken(String token, String email) throws Exception {
         Actor customer = actorRepository.findActorByEmail(email);
@@ -127,4 +145,9 @@ public class ActorServiceImp implements ActorService {
         customer.setResetPasswordToken(null);
         actorRepository.save(customer);
     }
+
+    private Actor convertToActor(UpdateDto actorDto) {
+        return modelMapper.map(actorDto, Actor.class);
+    }
+
 }
