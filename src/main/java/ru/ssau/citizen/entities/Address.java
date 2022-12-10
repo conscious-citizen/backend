@@ -16,9 +16,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Null
-    @OneToOne
-    Event event;
+
 
     private float longitude;
     private float latitude;

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Base64;
 
 @Data
 @Entity
@@ -38,8 +39,8 @@ public class Event {
 
     private String messageText;
 
-    @Lob
-    private byte[] photo;
+    @ManyToOne
+    private Photo photo;
 
     private LocalDate currentDate;
 

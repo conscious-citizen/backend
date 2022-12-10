@@ -27,9 +27,9 @@ public class EventServiceImpl implements EventService{
         event.setAddress(address1);
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
+
         save(event);
 
-        address1.setEvent(event);
         addressRepository.save(address1);
     }
 
