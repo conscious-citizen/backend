@@ -7,6 +7,7 @@ import ru.ssau.citizen.entities.Address;
 import ru.ssau.citizen.entities.Event;
 import ru.ssau.citizen.entities.EventDraft;
 import ru.ssau.citizen.entities.Rubric;
+import ru.ssau.citizen.repository.AddressRepository;
 import ru.ssau.citizen.repository.EventDraftRepository;
 import ru.ssau.citizen.repository.EventRepository;
 
@@ -17,32 +18,39 @@ import java.time.LocalDate;
 public class EventServiceImpl implements EventService{
 
     private final EventRepository eventRepository;
-    @Autowired
-    private  EventDraftRepository eventDraftRepository;
+    private final AddressRepository addressRepository;
+
+    private final EventDraftRepository eventDraftRepository;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository) {
+    public EventServiceImpl(EventRepository eventRepository,EventDraftRepository eventDraftRepository, AddressRepository addressRepository) {
+        this.eventDraftRepository = eventDraftRepository;
         this.eventRepository = eventRepository;
+        this.addressRepository = addressRepository;
     }
 
     @Override
-    public void createEvent(Event event, Address address, Rubric rubric, byte[] photoDir) {
-        event.setAddress(address);
+    public void createEvent(Event event, Address address) {
+        Address address1 = addressRepository.save(address);
+        event.setAddress(address1);
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
-        event.setRubric(rubric);
-        event.setPhoto(photoDir);
         save(event);
+
+        address1.setEvent(event);
+        addressRepository.save(address1);
     }
 
     @Override
-    public void createEventDraft(EventDraft event, Address address, Rubric rubric, byte[] photoDir) {
-        event.setAddress(address);
+    public void createEventDraft(EventDraft event, Address address) {
+        Address address1 = addressRepository.save(address);
+        event.setAddress(address1);
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
-        event.setRubric(rubric);
-        event.setPhoto(photoDir);
         save(event);
+
+        address1.setEventDraft(event);
+        addressRepository.save(address1);
     }
 
     @Override

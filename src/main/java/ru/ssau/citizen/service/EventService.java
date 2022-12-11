@@ -8,8 +8,8 @@ import ru.ssau.citizen.entities.Rubric;
 
 public interface EventService {
 
-    void createEvent(Event event, Address address, Rubric rubric, byte[] photoDir);
-    void createEventDraft(EventDraft event, Address address, Rubric rubric, byte[] photoDir);
+    void createEvent(Event event, Address address);
+    void createEventDraft(EventDraft event, Address address);
 
     void save(Event event);
     void save(EventDraft eventDraft);

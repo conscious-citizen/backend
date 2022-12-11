@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import ru.ssau.citizen.dto.AddressDto;
 import ru.ssau.citizen.dto.CreateEventDTO;
 import ru.ssau.citizen.entities.*;
 import ru.ssau.citizen.repository.ActorRepository;
@@ -43,11 +44,11 @@ public class EventController {
     @Operation(summary = "Создать инцидент")
 
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
-                                             Address address, Rubric rubric,
                                              @AuthenticationPrincipal UserDetails userDetails) {
         Event event = convertToEvent(createEventDTO);
+        Address address = convertToAddress(createEventDTO.getAddressDto());
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
-        eventService.createEvent(event, address, rubric, createEventDTO.getPhoto());
+        eventService.createEvent(event, address);
         return ResponseEntity.ok(event);
     }
 
@@ -68,11 +69,11 @@ public class EventController {
     @Operation(summary = "Добавить черновик")
 
     public ResponseEntity<EventDraft> createEventDraft(@RequestBody CreateEventDTO createEventDTO,
-                                                       Address address, Rubric rubric,
                                                        @AuthenticationPrincipal UserDetails userDetails) {
         EventDraft event = convertToEventDraft(createEventDTO);
+        Address address = convertToAddress(createEventDTO.getAddressDto());
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
-        eventService.createEventDraft(event, address, rubric, createEventDTO.getPhoto());
+        eventService.createEventDraft(event, address);
         return ResponseEntity.ok(event);
     }
     @GetMapping("/draft")
@@ -94,6 +95,9 @@ public class EventController {
 
     private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, EventDraft.class);
+    }
+    private Address convertToAddress(AddressDto addressDto) {
+        return modelMapper.map(addressDto, Address.class);
     }
 
 }
