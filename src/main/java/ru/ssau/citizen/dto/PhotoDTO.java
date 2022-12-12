@@ -1,10 +1,8 @@
-package ru.ssau.citizen.DTO;
-
+package ru.ssau.citizen.dto;
 
 import lombok.Data;
 
 @Data
 public class PhotoDTO {
-    Long id;
-
+    String photo;
 }

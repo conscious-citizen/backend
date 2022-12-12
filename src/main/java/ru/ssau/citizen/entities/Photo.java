@@ -1,5 +1,6 @@
 package ru.ssau.citizen.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,9 @@ public class Photo {
 
     private String photo;
 
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JsonIgnore
+    private Event event;
 
 
 }
