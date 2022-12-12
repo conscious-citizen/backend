@@ -12,7 +12,7 @@ public class CreateEventDTO {
 
     private String messageText;
 
-    private List<PhotoDTO> photos;
+    private List<PhotoDTO> photo;
 
     private AddressDto addressDto;
 
