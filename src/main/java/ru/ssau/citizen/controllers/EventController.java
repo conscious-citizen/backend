@@ -10,11 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.dto.AddressDto;
 import ru.ssau.citizen.dto.CreateEventDTO;
-import ru.ssau.citizen.entities.Address;
-import ru.ssau.citizen.entities.Event;
-import ru.ssau.citizen.repository.ActorRepository;
-import ru.ssau.citizen.repository.EventRepository;
-import ru.ssau.citizen.service.EventService;
+Tblue-2.7-CreateDraft
+import ru.ssau.citizen.entities.*;
 
 import java.util.List;
 
@@ -26,6 +23,8 @@ public class EventController {
     private final EventService eventService;
     private final ActorRepository actorRepository;
     private final EventRepository eventRepository;
+    @Autowired
+    private EventDraftRepository eventDraftRepository;
     private final ModelMapper modelMapper;
 
 
@@ -58,15 +57,41 @@ public class EventController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Показать информацию о выбранном по ID инцеденте")
-    public ResponseEntity<Event> showEvent(@PathVariable ("id") Long id) {
+    public ResponseEntity<Event> showEvent(@PathVariable("id") Long id) {
         Event event = eventRepository.findById(id).orElse(null);
+        return ResponseEntity.ok(event);
+    }
+    @PostMapping("/createdraft")
+    @Operation(summary = "Добавить черновик")
+
+    public ResponseEntity<EventDraft> createEventDraft(@RequestBody CreateEventDTO createEventDTO,
+                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        EventDraft event = convertToEventDraft(createEventDTO);
+        Address address = convertToAddress(createEventDTO.getAddressDto());
+        event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
+        eventService.createEventDraft(event, address);
+        return ResponseEntity.ok(event);
+    }
+    @GetMapping("/draft")
+    @Operation(summary = "Показать список черновиков")
+    public ResponseEntity<List<EventDraft>> showAllEventDraft() {
+        List<EventDraft> eventList = eventDraftRepository.findAll();
+        return ResponseEntity.ok(eventList);
+    }
+    @GetMapping("/draft/{id}")
+    @Operation(summary = "Показать информацию о выбранном по ID инцеденте")
+    public ResponseEntity<EventDraft> showEventDraft(@PathVariable("id") Long id) {
+        EventDraft event = eventDraftRepository.findById(id).orElse(null);
         return ResponseEntity.ok(event);
     }
 
     private Event convertToEvent(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
     }
-
+Tblue-2.7-CreateDraft
+    private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
+        return modelMapper.map(createEventDTO, EventDraft.class);
+    }
     private Address convertToAddress(AddressDto addressDto) {
         return modelMapper.map(addressDto, Address.class);
     }

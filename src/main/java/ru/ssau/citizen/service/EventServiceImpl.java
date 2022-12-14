@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.ssau.citizen.entities.Address;
 import ru.ssau.citizen.entities.Event;
 import ru.ssau.citizen.entities.Photo;
+import ru.ssau.citizen.entities.EventDraft;
+import ru.ssau.citizen.entities.Rubric;
 import ru.ssau.citizen.repository.AddressRepository;
+import ru.ssau.citizen.repository.EventDraftRepository;
+
 import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.repository.PhotoRepository;
 
@@ -19,6 +23,9 @@ public class EventServiceImpl implements EventService{
     private final AddressRepository addressRepository;
     private final PhotoRepository photoRepository;
 
+
+
+    private final EventDraftRepository eventDraftRepository;
 
     @Autowired
     public EventServiceImpl(EventRepository eventRepository, AddressRepository addressRepository, PhotoRepository photoRepository) {
@@ -45,10 +52,36 @@ public class EventServiceImpl implements EventService{
         addressRepository.save(address1);
     }
 
+    @Override
+    public void createEventDraft(EventDraft event, Address address) {
+
+    @Autowired
+    public EventServiceImpl(EventRepository eventRepository, AddressRepository addressRepository) {
+        this.eventRepository = eventRepository;
+        this.addressRepository = addressRepository;
+    }
+
+    @Override
+    public void createEvent(Event event, Address address) {
+        Address address1 = addressRepository.save(address);
+        event.setAddress(address1);
+        event.setStatus(false);
+        event.setCurrentDate(LocalDate.now());
+        save(event);
+        address1.setEventDraft(event);
+        address1.setEvent(event);
+        addressRepository.save(address1);
+    }
+
 
     @Override
     public void save(Event event) {
         eventRepository.save(event);
+    }
+
+    @Override
+    public void save(EventDraft eventDraft) {
+        eventDraftRepository.save(eventDraft);
     }
 
 }

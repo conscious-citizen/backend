@@ -8,13 +8,15 @@ import java.util.List;
 @Data
 public class CreateEventDTO {
 
-    private String messageSubject;
+        private String messageSubject;
 
-    private String messageText;
+        private String messageText;
 
     private List<PhotoDTO> photo;
 
-    private AddressDto addressDto;
 
-    private Long rubricId;
+        private AddressDto addressDto;
+
+        private Long rubricId;
+
 }

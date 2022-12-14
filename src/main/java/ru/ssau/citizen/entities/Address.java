@@ -17,7 +17,6 @@ public class Address {
     private Long id;
 
 
-
     private float longitude;
     private float latitude;
     private String city;
