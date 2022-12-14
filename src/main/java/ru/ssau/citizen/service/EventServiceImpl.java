@@ -4,34 +4,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.ssau.citizen.entities.Address;
 import ru.ssau.citizen.entities.Event;
-import ru.ssau.citizen.entities.Photo;
 import ru.ssau.citizen.entities.EventDraft;
 import ru.ssau.citizen.entities.Rubric;
 import ru.ssau.citizen.repository.AddressRepository;
 import ru.ssau.citizen.repository.EventDraftRepository;
 
 import ru.ssau.citizen.repository.EventRepository;
-import ru.ssau.citizen.repository.PhotoRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService{
 
     private final EventRepository eventRepository;
     private final AddressRepository addressRepository;
-    private final PhotoRepository photoRepository;
-
 
 
     private final EventDraftRepository eventDraftRepository;
 
     @Autowired
-    public EventServiceImpl(EventRepository eventRepository, AddressRepository addressRepository, PhotoRepository photoRepository) {
+    public EventServiceImpl(EventRepository eventRepository,EventDraftRepository eventDraftRepository, AddressRepository addressRepository) {
+        this.eventDraftRepository = eventDraftRepository;
         this.eventRepository = eventRepository;
         this.addressRepository = addressRepository;
-        this.photoRepository = photoRepository;
     }
 
     @Override
@@ -40,15 +35,9 @@ public class EventServiceImpl implements EventService{
         event.setAddress(address1);
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
-        List<Photo> photos = event.getPhoto();
-        for (Photo photo: photos
-             ) {
-            photo.setEvent(event);
-            photoRepository.save(photo);
-        }
-
         save(event);
 
+        address1.setEvent(event);
         addressRepository.save(address1);
     }
 
