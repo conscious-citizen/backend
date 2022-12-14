@@ -10,8 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.dto.AddressDto;
 import ru.ssau.citizen.dto.CreateEventDTO;
-Tblue-2.7-CreateDraft
 import ru.ssau.citizen.entities.*;
+import ru.ssau.citizen.repository.ActorRepository;
+import ru.ssau.citizen.repository.EventDraftRepository;
+import ru.ssau.citizen.repository.EventRepository;
+import ru.ssau.citizen.service.EventService;
 
 import java.util.List;
 
@@ -23,16 +26,16 @@ public class EventController {
     private final EventService eventService;
     private final ActorRepository actorRepository;
     private final EventRepository eventRepository;
-    @Autowired
-    private EventDraftRepository eventDraftRepository;
+    private final EventDraftRepository eventDraftRepository;
     private final ModelMapper modelMapper;
 
 
     @Autowired
-    public EventController(EventService eventService, ActorRepository actorRepository, EventRepository eventRepository, ModelMapper modelMapper) {
+    public EventController(EventService eventService, ActorRepository actorRepository, EventRepository eventRepository, EventDraftRepository eventDraftRepository, ModelMapper modelMapper) {
         this.eventService = eventService;
         this.actorRepository = actorRepository;
         this.eventRepository = eventRepository;
+        this.eventDraftRepository = eventDraftRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -88,7 +91,6 @@ public class EventController {
     private Event convertToEvent(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
     }
-Tblue-2.7-CreateDraft
     private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, EventDraft.class);
     }

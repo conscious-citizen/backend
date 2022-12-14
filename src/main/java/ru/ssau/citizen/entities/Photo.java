@@ -26,6 +26,9 @@ public class Photo {
     @ManyToOne(cascade=CascadeType.ALL)
     @JsonIgnore
     private Event event;
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JsonIgnore
+    private EventDraft eventDraft;
 
 
 }
