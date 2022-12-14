@@ -9,7 +9,6 @@ import ru.ssau.citizen.entities.Rubric;
 public interface EventService {
 
     void createEvent(Event event, Address address);
-Tblue-2.7-CreateDraft
     void createEventDraft(EventDraft event, Address address);
 
 

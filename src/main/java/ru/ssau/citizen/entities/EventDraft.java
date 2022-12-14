@@ -1,9 +1,11 @@
 package ru.ssau.citizen.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,9 +33,9 @@ public class EventDraft {
 
     private String messageText;
 
-    @Lob
-    private byte[] photo;
-
+    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Photo> photo;
     private LocalDate currentDate;
 
     private boolean result;
