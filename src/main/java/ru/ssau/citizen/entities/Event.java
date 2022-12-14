@@ -1,6 +1,5 @@
 package ru.ssau.citizen.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
@@ -9,8 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Null;
 import java.io.File;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.List;
 
 @Data
 @Entity
@@ -41,9 +38,8 @@ public class Event {
 
     private String messageText;
 
-    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Photo> photo;
+    @Lob
+    private byte[] photo;
 
     private LocalDate currentDate;
 
