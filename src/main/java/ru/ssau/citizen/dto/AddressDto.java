@@ -1,14 +1,15 @@
 package ru.ssau.citizen.dto;
 
-import lombok.Data;
+
 
 @Data
 public class AddressDto {
 
+ main
     private float longitude;
     private float latitude;
     private String city;
     private String street;
     private String home;
-
+main
 }
