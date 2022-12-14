@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 
 @Data
 @Entity
@@ -15,6 +16,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Null
     @OneToOne
     Event event;
     @OneToOne

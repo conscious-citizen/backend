@@ -10,13 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.dto.AddressDto;
 import ru.ssau.citizen.dto.CreateEventDTO;
+Tblue-2.7-CreateDraft
 import ru.ssau.citizen.entities.*;
-import ru.ssau.citizen.repository.ActorRepository;
-import ru.ssau.citizen.repository.EventDraftRepository;
-import ru.ssau.citizen.repository.EventRepository;
-import ru.ssau.citizen.service.EventService;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @RestController
@@ -92,7 +88,7 @@ public class EventController {
     private Event convertToEvent(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
     }
-
+Tblue-2.7-CreateDraft
     private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
         return modelMapper.map(createEventDTO, EventDraft.class);
     }

@@ -57,18 +57,8 @@ public class ActorController {
     @Operation(summary = "Обновить информацию о пользователе")
     public ResponseEntity<Actor> updateUser(@RequestBody UpdateDto actorDto, @AuthenticationPrincipal UserDetails userDetails){
         Actor currentActor = actorService.findActorByLogin(userDetails.getUsername());
-        Actor newActor = convertToActor(actorDto);
-        newActor.setLogin(userDetails.getUsername());
-//        newActor.setPassword(bCryptPasswordEncoder.encode(userDetails.getPassword()));
-        newActor.setPassword(userDetails.getPassword());
-        newActor.setId(currentActor.getId());
-        newActor.setEvents(currentActor.getEvents());
-        actorRepository.save(newActor);
+        Actor newActor = actorService.update(actorDto, currentActor);
         return ResponseEntity.ok(newActor);
-    }
-
-    private Actor convertToActor(UpdateDto actorDto) {
-        return modelMapper.map(actorDto, Actor.class);
     }
 
 }
