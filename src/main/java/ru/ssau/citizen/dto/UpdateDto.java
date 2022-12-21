@@ -8,7 +8,6 @@ public class UpdateDto {
     private String lastName;
     private String patronymic;
     private String phoneNumber;
-    private String email;
 
     private String city;
 
