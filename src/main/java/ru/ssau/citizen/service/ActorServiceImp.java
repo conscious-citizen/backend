@@ -117,7 +117,7 @@ public class ActorServiceImp implements ActorService {
         }
         newActor.setId(currentActor.getId());
         newActor.setEmail(currentActor.getEmail());
-        newActor.setPassword(bCryptPasswordEncoder.encode(actorDto.getPassword()));
+        newActor.setPassword(currentActor.getPassword());
         newActor.setEvents(currentActor.getEvents());
         actorRepository.save(newActor);
         return newActor;
