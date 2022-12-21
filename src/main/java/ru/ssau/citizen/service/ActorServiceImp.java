@@ -110,12 +110,13 @@ public class ActorServiceImp implements ActorService {
     @Override
     public Actor update(UpdateDto actorDto, Actor currentActor) {
         Actor newActor = convertToActor(actorDto);
-        if (actorDto.getEmail().equals(currentActor.getEmail())) {
-            throw new GlobalException("Пользователь с таким email уже зарегистрирован", HttpStatus.BAD_REQUEST);
-        } else if (actorDto.getLogin().equals(currentActor.getLogin())) {
+
+        if (!actorDto.getLogin().equals(currentActor.getLogin())
+                && actorRepository.existsByLogin(actorDto.getLogin())) {
             throw new GlobalException("Пользователь с таким login уже зарегистрирован", HttpStatus.BAD_REQUEST);
         }
         newActor.setId(currentActor.getId());
+        newActor.setEmail(currentActor.getEmail());
         newActor.setPassword(bCryptPasswordEncoder.encode(actorDto.getPassword()));
         newActor.setEvents(currentActor.getEvents());
         actorRepository.save(newActor);
