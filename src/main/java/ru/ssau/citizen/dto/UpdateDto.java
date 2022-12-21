@@ -18,6 +18,4 @@ public class UpdateDto {
     private String apartment;
 
     private String login;
-
-    private String password;
 }
