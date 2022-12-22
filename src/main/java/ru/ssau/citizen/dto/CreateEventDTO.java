@@ -3,6 +3,8 @@ package ru.ssau.citizen.dto;
 import lombok.Data;
 import ru.ssau.citizen.entities.Address;
 
+import java.util.List;
+
 @Data
 public class CreateEventDTO {
 
@@ -10,7 +12,7 @@ public class CreateEventDTO {
 
         private String messageText;
 
-        private byte[] photo;
+        private List<PhotoDTO> photo;
 
         private AddressDto addressDto;
 
