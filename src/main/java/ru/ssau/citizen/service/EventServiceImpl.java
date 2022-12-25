@@ -13,6 +13,7 @@ import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.repository.PhotoRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,20 +42,19 @@ public class EventServiceImpl implements EventService{
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
         List<Photo> photos = event.getPhoto();
+        Event savedEvent = eventRepository.save(event);
         for (Photo photo: photos
              ) {
-            photo.setEvent(event);
+            photo.setEvent(savedEvent);
             photoRepository.save(photo);
         }
-
-        save(event);
 
         addressRepository.save(address1);
     }
 
     @Override
     public void createEventDraft(EventDraft event, Address address) {
-        Address address1 = addressRepository.save(address);
+        /*Address address1 = addressRepository.save(address);
         event.setAddress(address1);
         event.setStatus(false);
         event.setCurrentDate(LocalDate.now());
@@ -65,7 +65,7 @@ public class EventServiceImpl implements EventService{
             photoRepository.save(photo);
         }
         save(event);
-        addressRepository.save(address1);
+        addressRepository.save(address1);*/
     }
 
 
