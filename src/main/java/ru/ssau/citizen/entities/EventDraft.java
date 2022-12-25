@@ -33,7 +33,7 @@ public class EventDraft {
 
     private String messageText;
 
-    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Photo> photo;
     private LocalDate currentDate;

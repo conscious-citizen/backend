@@ -1,5 +1,6 @@
 package ru.ssau.citizen.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
@@ -8,14 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.ssau.citizen.dto.AddressDto;
-import ru.ssau.citizen.dto.CreateEventDTO;
+import ru.ssau.citizen.dto.CreateEventDto;
+import ru.ssau.citizen.dto.PhotoDto;
 import ru.ssau.citizen.entities.*;
 import ru.ssau.citizen.repository.ActorRepository;
 import ru.ssau.citizen.repository.EventDraftRepository;
 import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.service.EventService;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,6 +34,8 @@ public class EventController {
     private final EventDraftRepository eventDraftRepository;
     private final ModelMapper modelMapper;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Autowired
     public EventController(EventService eventService, ActorRepository actorRepository, EventRepository eventRepository, EventDraftRepository eventDraftRepository, ModelMapper modelMapper) {
@@ -39,7 +46,7 @@ public class EventController {
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping
+    /*@PostMapping
     @Operation(summary = "Создать инцидент")
 
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
@@ -49,6 +56,25 @@ public class EventController {
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
         eventService.createEvent(event, address);
         return ResponseEntity.ok(event);
+    }*/
+
+    @PostMapping
+    @Operation(summary= "Создать новый инцидент")
+    public ResponseEntity<String> uploadImage(@RequestParam("firstFile")MultipartFile firstFile,
+                                              @RequestParam(value = "secondFile", required = false)MultipartFile secondFile,
+                                              @RequestParam(value = "thirdFile", required = false)MultipartFile thirdFile,
+                                              @RequestParam("messageSubject")String messageSubject,
+                                              @RequestParam("messageText")String messageText,
+                                              @RequestParam("addressDto")String addressDto,
+                                              @RequestParam("rubricId")Long rubricId,
+                                              @AuthenticationPrincipal UserDetails userDetails
+    ) throws IOException {
+        CreateEventDto createEventDto = convertToEvent(firstFile, secondFile, thirdFile, messageSubject, messageText, addressDto, rubricId);
+        Event event = convertToEvent(createEventDto);
+        Address address = convertToAddress(createEventDto.getAddressDto());
+        event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
+        eventService.createEvent(event, address);
+        return ResponseEntity.ok("Инцидент успешно создан");
     }
 
     @GetMapping
@@ -67,7 +93,7 @@ public class EventController {
     @PostMapping("/createdraft")
     @Operation(summary = "Добавить черновик")
 
-    public ResponseEntity<EventDraft> createEventDraft(@RequestBody CreateEventDTO createEventDTO,
+    public ResponseEntity<EventDraft> createEventDraft(@RequestBody CreateEventDto createEventDTO,
                                                        @AuthenticationPrincipal UserDetails userDetails) {
         EventDraft event = convertToEventDraft(createEventDTO);
         Address address = convertToAddress(createEventDTO.getAddressDto());
@@ -88,10 +114,44 @@ public class EventController {
         return ResponseEntity.ok(event);
     }
 
-    private Event convertToEvent(CreateEventDTO createEventDTO) {
+    private Event convertToEvent(CreateEventDto createEventDTO) {
         return modelMapper.map(createEventDTO, Event.class);
     }
-    private EventDraft convertToEventDraft(CreateEventDTO createEventDTO) {
+    private CreateEventDto convertToEvent(MultipartFile firstFile,
+                                          MultipartFile secondFile,
+                                          MultipartFile thirdFile,
+                                          String messageSubject,
+                                          String messageText,
+                                          String addressDto,
+                                          Long rubricId) throws IOException {
+        if (firstFile != null && secondFile != null && thirdFile != null)
+            return new CreateEventDto(
+                messageSubject,
+                messageText,
+                List.of(new PhotoDto[]{
+                            new PhotoDto(firstFile.getOriginalFilename(), firstFile.getContentType(), firstFile.getBytes()),
+                            new PhotoDto(secondFile.getOriginalFilename(), secondFile.getContentType(), secondFile.getBytes()),
+                            new PhotoDto(thirdFile.getOriginalFilename(), thirdFile.getContentType(), thirdFile.getBytes()),}),
+                objectMapper.readValue(addressDto, AddressDto.class),
+                rubricId);
+        if (firstFile != null && secondFile != null)
+            return new CreateEventDto(
+                    messageSubject,
+                    messageText,
+                    List.of(new PhotoDto[]{
+                            new PhotoDto(firstFile.getOriginalFilename(), firstFile.getContentType(), firstFile.getBytes()),
+                            new PhotoDto(secondFile.getOriginalFilename(), secondFile.getContentType(), secondFile.getBytes())}),
+                    objectMapper.readValue(addressDto, AddressDto.class),
+                    rubricId);
+        else return new CreateEventDto(
+                messageSubject,
+                messageText,
+                List.of(new PhotoDto[]{
+                        new PhotoDto(firstFile.getOriginalFilename(), firstFile.getContentType(), firstFile.getBytes())}),
+                objectMapper.readValue(addressDto, AddressDto.class),
+                rubricId);
+    }
+    private EventDraft convertToEventDraft(CreateEventDto createEventDTO) {
         return modelMapper.map(createEventDTO, EventDraft.class);
     }
     private Address convertToAddress(AddressDto addressDto) {

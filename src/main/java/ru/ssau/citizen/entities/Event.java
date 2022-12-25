@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "events")
+@Table(name = "event")
 @Schema(description = "Информация об инциденте")
 public class Event {
 
@@ -40,7 +40,7 @@ public class Event {
 
     private String messageText;
 
-    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event")
     @JsonIgnore
     private List<Photo> photo;
 
