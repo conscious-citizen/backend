@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import ru.ssau.citizen.dto.ForgotPasswordDTO;
+import ru.ssau.citizen.dto.MessageResponse;
 import ru.ssau.citizen.dto.ResetPasswordDTO;
 import ru.ssau.citizen.entities.Actor;
 import ru.ssau.citizen.service.ActorServiceImp;
@@ -43,7 +44,7 @@ public class ForgotPasswordController {
             actorService.updateResetPasswordToken(token, email);
             String siteURL = request.getUrl();
 
-            String resetPasswordLink = siteURL + "/reset_password?token=" + token;
+            String resetPasswordLink = siteURL + "/change-password?token=" + token;
 
             sendEmail(email, resetPasswordLink);
 
@@ -76,7 +77,7 @@ public class ForgotPasswordController {
 
     @PostMapping("/forgot_password/reset_password")
     @Operation(summary = "Обновление пароля")
-    public String processResetPassword(@RequestBody ResetPasswordDTO request) {
+    public ResponseEntity<MessageResponse> processResetPassword(@RequestBody ResetPasswordDTO request) {
 
 
         String msg;
@@ -85,13 +86,11 @@ public class ForgotPasswordController {
 
         if (customer == null) {
 
-            msg = "Invalid Token";
-            return msg;
+            return new ResponseEntity<>(new MessageResponse("Невалидный токен!"), HttpStatus.BAD_REQUEST);
         } else {
             actorService.updatePassword(customer, request.getPassword());
-            msg = "You have successfully changed your password.";
         }
 
-        return msg;
+        return new ResponseEntity<>(new MessageResponse("Пароль успешно изменен!"), HttpStatus.OK);
     }
 }
