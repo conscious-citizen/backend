@@ -5,23 +5,24 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ssau.citizen.dto.AddressDto;
-import ru.ssau.citizen.dto.CreateEventDto;
-import ru.ssau.citizen.dto.PhotoDto;
+import ru.ssau.citizen.dto.*;
 import ru.ssau.citizen.entities.*;
 import ru.ssau.citizen.repository.ActorRepository;
 import ru.ssau.citizen.repository.EventDraftRepository;
 import ru.ssau.citizen.repository.EventRepository;
 import ru.ssau.citizen.service.EventService;
+import ru.ssau.citizen.service.PhotoService;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/event")
@@ -29,6 +30,8 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+
+    private final PhotoService photoService;
     private final ActorRepository actorRepository;
     private final EventRepository eventRepository;
     private final EventDraftRepository eventDraftRepository;
@@ -38,50 +41,51 @@ public class EventController {
 
 
     @Autowired
-    public EventController(EventService eventService, ActorRepository actorRepository, EventRepository eventRepository, EventDraftRepository eventDraftRepository, ModelMapper modelMapper) {
+    public EventController(EventService eventService, ActorRepository actorRepository, EventRepository eventRepository, EventDraftRepository eventDraftRepository, ModelMapper modelMapper, PhotoService photoService) {
         this.eventService = eventService;
+        this.photoService = photoService;
         this.actorRepository = actorRepository;
         this.eventRepository = eventRepository;
         this.eventDraftRepository = eventDraftRepository;
         this.modelMapper = modelMapper;
     }
 
-    /*@PostMapping
-    @Operation(summary = "Создать инцидент")
-
-    public ResponseEntity<Event> createEvent(@RequestBody CreateEventDTO createEventDTO,
-                                             @AuthenticationPrincipal UserDetails userDetails) {
-        Event event = convertToEvent(createEventDTO);
-        Address address = convertToAddress(createEventDTO.getAddressDto());
-        event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
-        eventService.createEvent(event, address);
-        return ResponseEntity.ok(event);
-    }*/
-
     @PostMapping
     @Operation(summary= "Создать новый инцидент")
-    public ResponseEntity<String> uploadImage(@RequestParam("firstFile")MultipartFile firstFile,
-                                              @RequestParam(value = "secondFile", required = false)MultipartFile secondFile,
-                                              @RequestParam(value = "thirdFile", required = false)MultipartFile thirdFile,
-                                              @RequestParam("messageSubject")String messageSubject,
-                                              @RequestParam("messageText")String messageText,
-                                              @RequestParam("addressDto")String addressDto,
-                                              @RequestParam("rubricId")Long rubricId,
-                                              @AuthenticationPrincipal UserDetails userDetails
+    public ResponseEntity<MessageDto> uploadImage(@RequestParam("firstFile")MultipartFile firstFile,
+                                                  @RequestParam(value = "secondFile", required = false)MultipartFile secondFile,
+                                                  @RequestParam(value = "thirdFile", required = false)MultipartFile thirdFile,
+                                                  @RequestParam("messageSubject")String messageSubject,
+                                                  @RequestParam("messageText")String messageText,
+                                                  @RequestParam("addressDto")String addressDto,
+                                                  @RequestParam("rubricId")Long rubricId,
+                                                  @AuthenticationPrincipal UserDetails userDetails
     ) throws IOException {
         CreateEventDto createEventDto = convertToEvent(firstFile, secondFile, thirdFile, messageSubject, messageText, addressDto, rubricId);
         Event event = convertToEvent(createEventDto);
         Address address = convertToAddress(createEventDto.getAddressDto());
         event.setActor(actorRepository.findActorByLogin(userDetails.getUsername()));
         eventService.createEvent(event, address);
-        return ResponseEntity.ok("Инцидент успешно создан");
+        return ResponseEntity.ok(new MessageDto("Инцидент успешно создан"));
     }
 
     @GetMapping
     @Operation(summary = "Показать список инцедентов")
-    public ResponseEntity<List<Event>> showAllEvent() {
+    public ResponseEntity<List<ResponseEventDto>> showAllEvent() {
         List<Event> eventList = eventRepository.findAll();
-        return ResponseEntity.ok(eventList);
+        List<ResponseEventDto> responseEventDtos = eventList.stream().map(ResponseEventDto::new).collect(Collectors.toList());
+        for (ResponseEventDto item: responseEventDtos) {
+            item.setPhotoUrls(photoService.getPhotosByIncident(item.getId()));
+        }
+        return ResponseEntity.ok(responseEventDtos);
+    }
+
+    @GetMapping("photos/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable String id) {
+        Photo photo = photoService.getPhoto(Integer.parseInt(id));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + photo.getName() + "\"")
+                .body(photo.getData());
     }
 
     @GetMapping("/{id}")
