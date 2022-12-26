@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class Photo {
 
     @Lob
     @Column(name = "data")
+    @Type(type = "org.hibernate.type.ImageType")
     @JsonIgnore
     private byte[] data;
 
